@@ -9,6 +9,11 @@ const myUserId = process.env.USER_ID;
 const threadId = process.env.THREAD_ID;
 const cookiesFilePath = process.env.COOKIES_FILE_PATH;
 
+console.log(`repeat every ${repeatEveryMessagesCountThreshold}`);
+console.log(`message: "${repeaterMessage}"`);
+console.log(`my user id ${myUserId}`);
+console.log(`thread id ${threadId}`);
+
 const options = {
   listenEvents: true,
   selfListen: true,
@@ -21,7 +26,7 @@ const credentials = {
 let fbCookiesStored = false;
 
 const mutex = new Mutex();
-let messagesCounter = 0;
+let messagesCounter = repeatEveryMessagesCountThreshold - 1;
 
 process.on('SIGINT', () => process.exit());
 process.on('SIGTERM', () => process.exit());
@@ -48,10 +53,14 @@ login(credentials, options, (err, api) => {
         console.log('New message received');
         console.log(message);
 
+        console.log('Mutex is ' + mutex.isLocked());
+
         mutex.runExclusive(() => {
           ++messagesCounter;
+          console.log('increasing counter to ' + messagesCounter);
 
-          if (messagesCounter === repeatEveryMessagesCountThreshold) {
+          if (messagesCounter == repeatEveryMessagesCountThreshold) {
+            console.log('sending message');
             messagesCounter = 0;
 
             api.sendMessage(
