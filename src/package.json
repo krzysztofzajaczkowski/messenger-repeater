@@ -1,0 +1,13 @@
+{
+  "name": "messenger-repeater",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "async-mutex": "^0.4.0",
+    "facebook-chat-api": "^1.8.0",
+    "messen": "^1.0.0-beta.10"
+  }
+}

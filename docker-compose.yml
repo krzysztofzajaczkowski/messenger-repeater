@@ -1,0 +1,13 @@
+version: "3.9"
+services:
+  repeater:
+    build:
+      context: .
+    environment:
+      REPEAT_EVERY_X_MESSAGES: 5
+      REPEATER_MESSAGE: ""
+      USER_ID: ""
+      THREAD_ID: ""
+      COOKIES_FILE_PATH: ""
+    volumes:
+      - ./cookies.json:/cookies.json
