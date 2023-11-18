@@ -11,8 +11,8 @@ const cookiesFilePath = process.env.COOKIES_FILE_PATH;
 
 console.log(`repeat every ${repeatEveryMessagesCountThreshold}`);
 console.log(`message: "${repeaterMessage}"`);
-console.log(`my user id ${myUserId}`);
-console.log(`thread id ${threadId}`);
+console.log(`my user id: ${myUserId}`);
+console.log(`thread id: ${threadId}`);
 
 const options = {
   listenEvents: true,
@@ -30,7 +30,6 @@ let messagesCounter = repeatEveryMessagesCountThreshold - 1;
 
 process.on('SIGINT', () => process.exit());
 process.on('SIGTERM', () => process.exit());
-process.on('SIGUSR2', () => process.exit());
 
 login(credentials, options, (err, api) => {
   if (err) {
@@ -39,7 +38,7 @@ login(credentials, options, (err, api) => {
 
   api.listenMqtt((err, message) => {
     if (err) {
-      console.log('SOHAIB: Error is in API LISTEN');
+      console.log('Error is in API LISTEN');
       console.log(err);
     } else {
       if (!fbCookiesStored) {
@@ -47,20 +46,13 @@ login(credentials, options, (err, api) => {
         fbCookiesStored = true;
       }
 
-      const isNotSentByMyself = message.senderID !== myUserId;
+      const isNotSentByMe = message.senderID !== myUserId;
       const isSentInCorrectConversation = message.threadID === threadId;
-      if (message.type === 'message' && isNotSentByMyself && isSentInCorrectConversation) {
-        console.log('New message received');
-        console.log(message);
-
-        console.log('Mutex is ' + mutex.isLocked());
-
+      if (message.type === 'message' && isNotSentByMe && isSentInCorrectConversation) {
         mutex.runExclusive(() => {
           ++messagesCounter;
-          console.log('increasing counter to ' + messagesCounter);
 
           if (messagesCounter == repeatEveryMessagesCountThreshold) {
-            console.log('sending message');
             messagesCounter = 0;
 
             api.sendMessage(
@@ -70,15 +62,11 @@ login(credentials, options, (err, api) => {
                 if (err) {
                   return console.error(err);
                 }
-                console.log(messageInfo);
               }
             );
           }
         });
 
-      } else if (message.type === 'event') {
-        console.log('Event received');
-        console.log(message);
       }
     }
   });
