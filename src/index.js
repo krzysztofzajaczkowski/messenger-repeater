@@ -48,7 +48,8 @@ login(credentials, options, (err, api) => {
 
       const isNotSentByMe = message.senderID !== myUserId;
       const isSentInCorrectConversation = message.threadID === threadId;
-      if (message.type === 'message' && isNotSentByMe && isSentInCorrectConversation) {
+      const isMessageOrReply = message.type === 'message' || message.type === 'message_reply';
+      if (isMessageOrReply && isNotSentByMe && isSentInCorrectConversation) {
         mutex.runExclusive(() => {
           ++messagesCounter;
 
