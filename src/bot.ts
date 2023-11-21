@@ -48,9 +48,9 @@ class Bot {
     this.client.login(config.DISCORD_TOKEN);
   }
   
-  sendMeskaSrodaMessage(authorNickname: string, text: string) {
+  sendMeskaSrodaMessage(authorNickname: string, text: string, attachments: string[]) {
     const channel = this.client.channels.cache.get(config.MESKA_SRODA_DISCORD_CHANNEL_ID) as TextChannel;
-    channel.send(`${authorNickname}: ${text}`);
+    channel.send({content: `${authorNickname}: ${text}`, files: attachments});
   }
 }
 

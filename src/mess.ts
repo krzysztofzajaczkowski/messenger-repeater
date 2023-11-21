@@ -49,7 +49,8 @@ class Mess {
                     // @ts-ignore
                     this.api.getThreadInfo(message.threadID, (err, threadInfo) => { 
                         const senderName = threadInfo.nicknames[message.senderID];
-                        this.bot?.sendMeskaSrodaMessage(senderName, message.body);
+                        const images = message.attachments.filter((a : any) => a.type === "photo").map((a : any) => a.largePreviewUrl);
+                        this.bot?.sendMeskaSrodaMessage(senderName, message.body, images);
                     })
                 }
                 }
