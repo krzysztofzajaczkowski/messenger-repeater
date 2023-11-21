@@ -25,6 +25,7 @@ process.on('SIGTERM', () => process.exit());
 class Mess {
     api: any;
     bot?: Bot;
+    lastUsername?: string;
     constructor() {
         
         // @ts-ignore
@@ -47,10 +48,14 @@ class Mess {
 
                 if(isNotSentByMe && isSentInCorrectConversation && isMessageOrReply && this.bot) {
                     // @ts-ignore
-                    this.api.getThreadInfo(message.threadID, (err, threadInfo) => { 
+                    this.api.getThreadInfo(message.threadID, async (err, threadInfo) => { 
                         const senderName = threadInfo.nicknames[message.senderID];
-                        const images = message.attachments.filter((a : any) => a.type === "photo").map((a : any) => a.largePreviewUrl);
-                        this.bot?.sendMeskaSrodaMessage(senderName, message.body, images);
+                        // @ts-ignore
+                        this.api.getUserInfo(message.senderID, (err, userInfo) => {
+                            const images = message.attachments.filter((a : any) => a.type === "photo").map((a : any) => a.largePreviewUrl);
+                            this.bot?.sendMeskaSrodaMessage(senderName, message.body, images, userInfo[message.senderID].thumbSrc);
+                        });
+                        
                     })
                 }
                 }
@@ -64,8 +69,9 @@ class Mess {
         this.api.sendMessage(
             text,
             config.THREAD_ID
-        )
+        )        
     }
+    
 }
 
 export default Mess;

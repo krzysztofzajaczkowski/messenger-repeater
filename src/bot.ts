@@ -7,7 +7,7 @@ import Mess from "./mess";
 class Bot {
   client: Client;
   messenger: Mess;
-
+  
   constructor(messenger: Mess) {
     this.client = new Client({
       intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.DirectMessages, GatewayIntentBits.MessageContent],
@@ -31,6 +31,7 @@ class Bot {
 
       const command = commands.find(c => c.data.name === interaction.commandName);
       if(command) {
+
         if(command.run) {
             command.run(this, interaction);
             return;
@@ -48,9 +49,22 @@ class Bot {
     this.client.login(config.DISCORD_TOKEN);
   }
   
-  sendMeskaSrodaMessage(authorNickname: string, text: string, attachments: string[]) {
+  async sendMeskaSrodaMessage(authorNickname: string, text: string, attachments: string[], avatarUrl: string) {
     const channel = this.client.channels.cache.get(config.MESKA_SRODA_DISCORD_CHANNEL_ID) as TextChannel;
-    channel.send({content: `${authorNickname}: ${text}`, files: attachments});
+    const webhooks = await channel.fetchWebhooks();
+    const webhook = webhooks.find(wh => wh.token === config.WEBHOOK_TOKEN);
+    
+    if(!webhook)
+      return console.log('No webhook by config token');
+
+    await webhook.send({
+      content: text,
+      username: authorNickname,
+      files: attachments,
+      avatarURL: avatarUrl
+    });
+    
+    //channel.send({content: `${authorNickname}: ${text}`, files: attachments});
   }
 }
 
