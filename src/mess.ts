@@ -4,6 +4,7 @@ import fs from "fs";
 import login from "facebook-chat-api";
 import { config } from "./config";
 import { Mutex } from "async-mutex";
+import Bot from "./bot";
 
 console.log(`my user id: ${config.USER_ID}`);
 console.log(`thread id: ${config.THREAD_ID}`);
@@ -23,7 +24,9 @@ process.on('SIGTERM', () => process.exit());
 
 class Mess {
     api: any;
+    bot?: Bot;
     constructor() {
+        
         // @ts-ignore
         login(credentials, options, (err, api) => {
             this.api = api;
@@ -41,6 +44,14 @@ class Mess {
                 const isNotSentByMe = message.senderID !== config.USER_ID;
                 const isSentInCorrectConversation = message.threadID === config.THREAD_ID;
                 const isMessageOrReply = message.type === 'message' || message.type === 'message_reply';
+
+                if(isNotSentByMe && isSentInCorrectConversation && isMessageOrReply && this.bot) {
+                    // @ts-ignore
+                    this.api.getThreadInfo(message.threadID, (err, threadInfo) => { 
+                        const senderName = threadInfo.nicknames[message.senderID];
+                        this.bot?.sendMeskaSrodaMessage(senderName, message.body);
+                    })
+                }
                 }
             });
         });

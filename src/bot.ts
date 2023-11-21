@@ -1,4 +1,4 @@
-import { Client } from "discord.js";
+import { Client, Events, GatewayIntentBits, GuildChannel, TextChannel } from "discord.js";
 import { deployCommands } from "./deploy-commands";
 import { commands } from "./commands";
 import { config } from "./config";
@@ -10,22 +10,23 @@ class Bot {
 
   constructor(messenger: Mess) {
     this.client = new Client({
-      intents: ["Guilds", "GuildMessages", "DirectMessages"],
+      intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.DirectMessages, GatewayIntentBits.MessageContent],
     });
     
     this.messenger = messenger;
+    this.messenger.bot = this;
   }
 
   start() {
-    this.client.once("ready", () => {
+    this.client.once(Events.ClientReady, () => {
       console.log("Discord bot is ready! 🤖");
     });
   
-    this.client.on("guildAvailable", async (guild) => {
+    this.client.on(Events.GuildAvailable, async (guild) => {
       await deployCommands({ guildId: guild.id });
   });
   
-  this.client.on("interactionCreate", async (interaction) => {
+  this.client.on(Events.InteractionCreate, async (interaction) => {
     if(!interaction.isChatInputCommand()) return;
 
       const command = commands.find(c => c.data.name === interaction.commandName);
@@ -34,16 +35,25 @@ class Bot {
             command.run(this, interaction);
             return;
         }
+      }
+    });
 
-        // IF COMMAND HAS NO RUN METHOD - WE HAVE TO DEAL WITH IT HERE
-        // ...
-    }
+    this.client.on(Events.MessageCreate, async (message) => {
+      if(message.channel.id === config.MESKA_SRODA_DISCORD_CHANNEL_ID && !message.author.bot) {
+        this.messenger.sendMessage(`${message.member?.displayName}: ${message.content.toString()}`);
+      }
     });
   
   
     this.client.login(config.DISCORD_TOKEN);
   }
   
+  sendMeskaSrodaMessage(authorNickname: string, text: string) {
+    const channel = this.client.channels.cache.get(config.MESKA_SRODA_DISCORD_CHANNEL_ID) as TextChannel;
+    channel.send(`${authorNickname}: ${text}`);
+  }
 }
+
+
 
 export default Bot;
