@@ -20,6 +20,7 @@ class Bot {
   start() {
     this.client.once(Events.ClientReady, () => {
       console.log("Discord bot is ready! 🤖");
+      console.log(`[Pterodactyl] Service started`);
     });
   
     this.client.on(Events.GuildAvailable, async (guild) => {
