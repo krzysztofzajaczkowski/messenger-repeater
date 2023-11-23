@@ -3,6 +3,7 @@ import { deployCommands } from "./deploy-commands";
 import { commands } from "./commands";
 import { config } from "./config/config";
 import Mess from "./mess";
+import { MediaIntegrationFilter } from "./media-integrations/mediaIntegrationFilter";
 
 class Bot {
   client: Client;
@@ -41,8 +42,12 @@ class Bot {
     });
 
     this.client.on(Events.MessageCreate, async (message) => {
-      if(message.channel.id === config.MESKA_SRODA_DISCORD_CHANNEL_ID && !message.author.bot) {
-        this.messenger.sendMessage(`${message.member?.displayName}: ${message.content.toString()}`);
+      if (!message.author.bot) {
+        const mediaIntegrationFilter = config.MEDIA_INTEGRATION_FILTERS.find(f => f.matchesDiscordChannelId(message.channel.id));
+
+        if (mediaIntegrationFilter) {
+          this.messenger.sendMessage(`${message.member?.displayName}: ${message.content.toString()}`, mediaIntegrationFilter.messengerThreadId);  
+        }
       }
     });
   
@@ -50,10 +55,10 @@ class Bot {
     this.client.login(config.DISCORD_TOKEN);
   }
   
-  async sendMeskaSrodaMessage(authorNickname: string, text: string, attachments: string[], avatarUrl: string) {
-    const channel = this.client.channels.cache.get(config.MESKA_SRODA_DISCORD_CHANNEL_ID) as TextChannel;
+  async sendMeskaSrodaMessage(mediaIntegrationFilter: MediaIntegrationFilter, authorNickname: string, text: string, attachments: string[], avatarUrl: string) {
+    const channel = this.client.channels.cache.get(mediaIntegrationFilter.discordChannelId) as TextChannel;
     const webhooks = await channel.fetchWebhooks();
-    const webhook = webhooks.find(wh => wh.token === config.WEBHOOK_TOKEN);
+    const webhook = webhooks.find(wh => wh.token === mediaIntegrationFilter.discordWebhookToken);
     
     if(!webhook)
       return console.log('No webhook by config token');
@@ -64,8 +69,6 @@ class Bot {
       files: attachments,
       avatarURL: avatarUrl
     });
-    
-    //channel.send({content: `${authorNickname}: ${text}`, files: attachments});
   }
 }
 

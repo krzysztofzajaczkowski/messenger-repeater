@@ -4,6 +4,7 @@ import fs from "fs";
 import login from "facebook-chat-api";
 import { config } from "./config/config";
 import Bot from "./bot";
+import { MediaIntegrationFilter } from "./media-integrations/mediaIntegrationFilter";
 
 class Mess {
     api: any;
@@ -38,12 +39,12 @@ class Mess {
                 this.onListen(this.matchCallback(message => {
                     this.storeCookiesIfRequired();
 
+                    const mediaIntegrationFilter = config.MEDIA_INTEGRATION_FILTERS.find(f => f.matchesMessengerThreadId(message.threadID));
                     const isNotSentByMe = message.senderID !== config.USER_ID;
-                    const isSentInCorrectConversation = message.threadID === config.THREAD_ID;
                     const isMessageOrReply = this.supportedMessageTypesForProxy.includes(message.type);
 
-                    if(isNotSentByMe && isSentInCorrectConversation && isMessageOrReply && this.bot) {
-                        this.sendDiscordBotMessage(message);              
+                    if(isNotSentByMe && mediaIntegrationFilter && isMessageOrReply && this.bot) {
+                        this.sendDiscordBotMessage(message, mediaIntegrationFilter);              
                     }
                 }));
             })
@@ -81,7 +82,7 @@ class Mess {
         console.log(`[ERROR] ${error}`);
     }
 
-    private sendDiscordBotMessage(message: any) {
+    private sendDiscordBotMessage(message: any, mediaIntegrationFilter: MediaIntegrationFilter) {
         // @ts-ignore
         this.api.getThreadInfo(message.threadID, 
             this.matchCallback(threadInfo => {
@@ -91,17 +92,17 @@ class Mess {
                     this.matchCallback(userInfo => {
                         const images = this.getPhotoUrls(message.attachments);
                         const userProfileThumbnail = userInfo[message.senderID].thumbSrc;
-                        this.bot?.sendMeskaSrodaMessage(senderName, message.body, images, userProfileThumbnail);
+                        this.bot?.sendMeskaSrodaMessage(mediaIntegrationFilter, senderName, message.body, images, userProfileThumbnail);
                     })
                 );
             })
         );
     }
 
-    sendMessage(text: string) {
+    sendMessage(text: string, threadId: string) {
         this.api.sendMessage(
             text,
-            config.THREAD_ID
+            threadId
         )        
     }
     
