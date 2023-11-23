@@ -1,6 +1,8 @@
-import { MediaIntegration } from "./mediumLink"
+import { MediaIntegrationFilter } from "../media-integrations/mediaIntegrationFilter"
+import { MediaIntegration } from "./mediaIntegration"
 
 export interface AppConfig {
+    MEDIA_INTEGRATION_FILTERS: MediaIntegrationFilter[]
     MEDIA_INTEGRATIONS: MediaIntegration[]
     DISCORD_TOKEN: string,
     DISCORD_CLIENT_ID: string,
