@@ -8,9 +8,14 @@ export class MediaIntegrationFilter {
         return this._messengerThreadId;
     }
 
+    public get discordWebhookToken(): string {
+        return this._discordWebhookToken;
+    }
+
     constructor(
         private _messengerThreadId: string, 
-        private _discordChannelId: string) {
+        private _discordChannelId: string,
+        private _discordWebhookToken: string) {
     }
 
     matchesMessengerThreadId(threadIdCandidate: string): boolean {

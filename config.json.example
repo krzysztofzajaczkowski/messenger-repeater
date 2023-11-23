@@ -1,12 +1,14 @@
 {
     "MEDIA_INTEGRATIONS": [
         {
-            "messengerThreadId": "",
-            "discordChannelId": ""
+            "MESSENGER_THREAD_ID": "",
+            "DISCORD_CHANNEL_ID": "",
+            "DISCORD_WEBHOOK_TOKEN": ""
         },
         {
-            "messengerThreadId": "",
-            "discordChannelId": ""
+            "MESSENGER_THREAD_ID": "",
+            "DISCORD_CHANNEL_ID": "",
+            "DISCORD_WEBHOOK_TOKEN": ""
         }
     ]
 }
