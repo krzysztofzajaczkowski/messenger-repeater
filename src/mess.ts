@@ -2,7 +2,7 @@
 import fs from "fs";
 //@ts-ignore
 import login from "facebook-chat-api";
-import { config } from "./config";
+import { config } from "./config/config";
 import Bot from "./bot";
 
 class Mess {

@@ -1,0 +1,12 @@
+{
+    "MEDIA_INTEGRATIONS": [
+        {
+            "messengerThreadId": "",
+            "discordChannelId": ""
+        },
+        {
+            "messengerThreadId": "",
+            "discordChannelId": ""
+        }
+    ]
+}

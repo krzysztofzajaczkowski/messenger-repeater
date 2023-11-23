@@ -1,7 +1,7 @@
 import { Client, Events, GatewayIntentBits, GuildChannel, TextChannel } from "discord.js";
 import { deployCommands } from "./deploy-commands";
 import { commands } from "./commands";
-import { config } from "./config";
+import { config } from "./config/config";
 import Mess from "./mess";
 
 class Bot {
