@@ -19,7 +19,7 @@ class Mess {
     private getOptions() {
         return {
             listenEvents: true,
-            selfListen: true,
+            logLevel: "silly"
           };
     }
 
@@ -44,6 +44,7 @@ class Mess {
                     const isMessageOrReply = this.supportedMessageTypesForProxy.includes(message.type);
 
                     if(isNotSentByMe && mediaIntegrationFilter && isMessageOrReply && this.bot) {
+                        console.log(`[INFO][Mess] Sending to ${mediaIntegrationFilter.name} Discord`);
                         this.sendDiscordBotMessage(message, mediaIntegrationFilter);              
                     }
                 }));

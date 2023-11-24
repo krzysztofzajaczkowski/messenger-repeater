@@ -46,6 +46,7 @@ class Bot {
         const mediaIntegrationFilter = config.MEDIA_INTEGRATION_FILTERS.find(f => f.matchesDiscordChannelId(message.channel.id));
 
         if (mediaIntegrationFilter) {
+          console.log(`[INFO][Bot] Sending to ${mediaIntegrationFilter.name} Messenger chat`);
           this.messenger.sendMessage(`${message.member?.displayName}: ${message.content.toString()}`, mediaIntegrationFilter.messengerThreadId);  
         }
       }

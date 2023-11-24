@@ -25,7 +25,7 @@ try {
   console.error(`Error reading or parsing ${CONFIG_FILE_PATH} file:`, error);
 }
 
-const mediaIntegrationFilters = configData.MEDIA_INTEGRATIONS ? configData.MEDIA_INTEGRATIONS.map((i : MediaIntegration) => new MediaIntegrationFilter(i.MESSENGER_THREAD_ID, i.DISCORD_CHANNEL_ID, i.DISCORD_WEBHOOK_TOKEN)) : [];
+const mediaIntegrationFilters = configData.MEDIA_INTEGRATIONS ? configData.MEDIA_INTEGRATIONS.map((i : MediaIntegration) => new MediaIntegrationFilter(i.NAME, i.MESSENGER_THREAD_ID, i.DISCORD_CHANNEL_ID, i.DISCORD_WEBHOOK_TOKEN)) : [];
 
 export const config : AppConfig = {
   MEDIA_INTEGRATION_FILTERS: mediaIntegrationFilters,

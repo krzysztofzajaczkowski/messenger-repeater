@@ -12,7 +12,12 @@ export class MediaIntegrationFilter {
         return this._discordWebhookToken;
     }
 
+    public get name(): string {
+        return this._name;
+    }
+
     constructor(
+        private _name: string,
         private _messengerThreadId: string, 
         private _discordChannelId: string,
         private _discordWebhookToken: string) {
