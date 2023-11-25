@@ -93,7 +93,8 @@ class Mess {
                     this.matchCallback(userInfo => {
                         const images = this.getPhotoUrls(message.attachments);
                         const userProfileThumbnail = userInfo[message.senderID].thumbSrc;
-                        this.bot?.sendMeskaSrodaMessage(mediaIntegrationFilter, senderName, message.body, images, userProfileThumbnail);
+                        const authorName = senderName ?? userInfo[message.senderID].name;
+                        this.bot?.sendMeskaSrodaMessage(mediaIntegrationFilter, authorName , message.body, images, userProfileThumbnail);
                     })
                 );
             })
