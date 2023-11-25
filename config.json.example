@@ -1,0 +1,16 @@
+{
+    "MEDIA_INTEGRATIONS": [
+        {
+            "NAME": "",
+            "MESSENGER_THREAD_ID": "",
+            "DISCORD_CHANNEL_ID": "",
+            "DISCORD_WEBHOOK_TOKEN": ""
+        },
+        {
+            "NAME": "",
+            "MESSENGER_THREAD_ID": "",
+            "DISCORD_CHANNEL_ID": "",
+            "DISCORD_WEBHOOK_TOKEN": ""
+        }
+    ]
+}
