@@ -5,6 +5,7 @@ import login from "facebook-chat-api";
 import { config } from "./config/config";
 import Bot from "./bot";
 import { MediaIntegrationFilter } from "./media-integrations/mediaIntegrationFilter";
+import { attachmentHandlers } from "./messenger/attachments/handlers";
 
 class Mess {
     api: any;
@@ -75,8 +76,10 @@ class Mess {
         }
     }
 
-    private getPhotoUrls(attachments: any[]) {
-        return attachments.filter((a : any) => a.type === "photo").map((a : any) => a.largePreviewUrl);
+    private getAttachments(attachments: any[]): string[] {
+        return attachments
+            .map(att => attachmentHandlers.find(h => h.type === att.type)?.urlSelector(att))
+            .filter(url => url) as string[];
     }
 
     private logError(error: any) {
@@ -91,10 +94,10 @@ class Mess {
                 // @ts-ignore
                 this.api.getUserInfo(message.senderID, 
                     this.matchCallback(userInfo => {
-                        const images = this.getPhotoUrls(message.attachments);
+                        const attachments = this.getAttachments(message.attachments);
                         const userProfileThumbnail = userInfo[message.senderID].thumbSrc;
                         const authorName = senderName ?? userInfo[message.senderID].name;
-                        this.bot?.sendMeskaSrodaMessage(mediaIntegrationFilter, authorName , message.body, images, userProfileThumbnail);
+                        this.bot?.sendMeskaSrodaMessage(mediaIntegrationFilter, authorName , message.body, attachments, userProfileThumbnail);
                     })
                 );
             })
