@@ -26,6 +26,7 @@ class Mess {
 
     private getCredentials() {
         return {
+            userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36",
             appState: JSON.parse(fs.readFileSync(config.COOKIES_FILE_PATH, 'utf8')),
           };
     }
@@ -46,6 +47,10 @@ class Mess {
 
                     if(isNotSentByMe && mediaIntegrationFilter && isMessageOrReply && this.bot) {
                         console.log(`[INFO][Mess] Sending to ${mediaIntegrationFilter.name} Discord`);
+                        console.log(`------`);
+                        console.log(`[DEBUG][Mess] Message Body`);
+                        console.log(JSON.stringify(message));
+                        console.log(`------`);
                         this.sendDiscordBotMessage(message, mediaIntegrationFilter);              
                     }
                 }));
@@ -83,7 +88,7 @@ class Mess {
     }
 
     private logError(error: any) {
-        console.log(`[ERROR] ${error}`);
+        console.log(`[ERROR] ${JSON.stringify(error)}`);
     }
 
     private sendDiscordBotMessage(message: any, mediaIntegrationFilter: MediaIntegrationFilter) {
